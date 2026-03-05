@@ -1,0 +1,120 @@
+body {
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  background: #f6f7fb;
+  margin: 0;
+  padding: 24px;
+}
+
+.card {
+  max-width: 420px;
+  margin: 60px auto;
+  background: #fff;
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.08);
+}
+
+label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+input {
+  width: 120px;
+  padding: 10px 12px;
+  border: 1px solid #d7dbe7;
+  border-radius: 10px;
+  font-size: 16px;
+  outline: none;
+}
+
+input:focus {
+  border-color: #7aa6ff;
+  box-shadow: 0 0 0 3px rgba(122,166,255,.25);
+}
+
+button {
+  width: 100%;
+  margin-top: 14px;
+  padding: 12px 14px;
+  border: 0;
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  background: #2563eb;
+  color: #fff;
+}
+
+button:hover {
+  filter: brightness(0.95);
+}
+
+.json-card{
+  max-width: 980px;
+  margin: 18px auto 0;
+  background: #fff;
+  border: 1px solid #e8ecf7;
+  border-radius: 16px;
+  padding: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.06);
+}
+
+.json-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.json-title{
+  display:flex;
+  align-items:center;
+  gap: 10px;
+}
+
+.json-title h3{
+  margin:0;
+  font-size: 18px;
+}
+
+.badge{
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #f3f5fb;
+  border: 1px solid #e2e6f2;
+  color: #111827;
+}
+
+.btn-ghost{
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  padding: 10px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-ghost:hover{ filter: brightness(.97); }
+
+.console{
+  border-radius: 16px;
+  padding: 18px;
+  background: radial-gradient(1200px 500px at 50% 0%, #0f1b36 0%, #070b14 60%, #05060b 100%);
+  color: #e5e7eb;
+  overflow: auto;
+  max-height: 320px;
+  border: 1px solid rgba(255,255,255,.06);
+}
+
+.console pre{
+  margin:0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+  font-size: 13px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
