@@ -10,31 +10,31 @@
 
   <div class="card">
     <label for="cuenta">Ingresar número de cuenta</label>
-    <input id="cuenta" name="cuenta" type="text" placeholder="Ej: 123456"  maxlength="6" size="6">
+    <input id="cuenta" name="cuenta" type="text" placeholder="Ej: 123456" maxlength="6" size="6">
     <button id="btn" type="button">Continuar</button>
   </div>
 
   <section class="json-card">
     <div class="json-header">
-        <div class="json-title">
+      <div class="json-title">
         <h3>Datos (JSON)</h3>
         <span id="statusBadge" class="badge">—</span>
-        </div>
+      </div>
 
-        <button id="copyBtn" class="btn-ghost" type="button">Copiar JSON</button>
+      <button id="copyBtn" class="btn-ghost" type="button">Copiar JSON</button>
     </div>
 
     <div class="console" id="consoleBox">
-        <pre id="consoleText">Esperando consulta…</pre>
+      <pre id="consoleText">Esperando consulta…</pre>
     </div>
-</section>
+  </section>
 
   <p id="msg" class="msg"></p>
   <pre id="resultado" class="resultado"></pre>
 
   <iframe src="https://docs.google.com/document/d/1mPKF950X8qzGvdJqIMEcBCeNM-L4zkVN/preview" width="100%" height="700"></iframe>
 
-  <script src="script.js"></script>
+  <script type="module" src="./main.js"></script>
 
 </body>
 </html>
