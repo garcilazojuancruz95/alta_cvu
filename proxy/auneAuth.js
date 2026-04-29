@@ -16,9 +16,11 @@ async function getAuneToken() {
   }
 
   const data = await response.json();
+  
   console.log("Token obtenido de Aune");
+  console.log("Respuesta login Aune:", data);
 
-  return data.token; // después ajustamos esto si el campo es distinto
+  return `Bearer ${data.token}`; // después ajustamos esto si el campo es distinto
 }
 
 module.exports = { getAuneToken };

@@ -155,6 +155,114 @@ app.get("/complif/:cuenta", async (req, res) => {
 /* =========================================================
    6) LEVANTAR SERVIDOR
 ========================================================= */
+app.get("/aune/cuentas/:cuenta", async (req, res) => {
+  try {
+    const cuenta = req.params.cuenta;
+    const token = await getAuneToken();
+
+    const response = await fetch(
+      `${process.env.AUNE_BASE_URL}/api/cuentas/${encodeURIComponent(cuenta)}`,
+      {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          Authorization: token
+        }
+      }
+    );
+
+    const data = await response.json();
+
+    return res.status(response.status).json(data);
+  } catch (error) {
+    return res.status(500).json({
+      error: "Error consultando cuenta en Aune",
+      detail: error.message
+    });
+  }
+});
+
+app.get("/aune/personas/datosPersona", async (req, res) => {
+  try {
+    const { tipoId, id } = req.query;
+    const token = await getAuneToken();
+
+    const response = await fetch(
+      `${process.env.AUNE_BASE_URL}/api/personas/datosPersona?tipoId=${encodeURIComponent(tipoId)}&id=${encodeURIComponent(id)}`,
+      {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          Authorization: token
+        }
+      }
+    );
+
+    const data = await response.json();
+
+    return res.status(response.status).json(data);
+  } catch (error) {
+    return res.status(500).json({
+      error: "Error consultando datosPersona en Aune",
+      detail: error.message
+    });
+  }
+});
+
+app.get("/aune/personas/listadoPersonas", async (req, res) => {
+  try {
+    const { tipoId, id } = req.query;
+    const token = await getAuneToken();
+
+    const response = await fetch(
+      `${process.env.AUNE_BASE_URL}/api/personas/listadoPersonas?tipoId=${encodeURIComponent(tipoId)}&id=${encodeURIComponent(id)}`,
+      {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          Authorization: token
+        }
+      }
+    );
+
+    const data = await response.json();
+
+    return res.status(response.status).json(data);
+  } catch (error) {
+    return res.status(500).json({
+      error: "Error consultando listadoPersonas en Aune",
+      detail: error.message
+    });
+  }
+});
+
+app.get("/aune/cuentas/:cuenta/personas", async (req, res) => {
+  try {
+    const cuenta = req.params.cuenta;
+    const token = await getAuneToken();
+
+    const response = await fetch(
+      `${process.env.AUNE_BASE_URL}/api/cuentas/${encodeURIComponent(cuenta)}/personas`,
+      {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          Authorization: token
+        }
+      }
+    );
+
+    const data = await response.json();
+
+    return res.status(response.status).json(data);
+  } catch (error) {
+    return res.status(500).json({
+      error: "Error consultando personas de cuenta en Aune",
+      detail: error.message
+    });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Proxy corriendo en http://localhost:${PORT}`);
 });
