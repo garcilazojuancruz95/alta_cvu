@@ -51,7 +51,23 @@ export async function buscarCuenta() {
     const telefonoEmpresa = extraerTelefonoEmpresa(r1.data);
 
     const r2 = await obtenerPersonasCuenta(cuenta);
-    const persona = r2.data?.find((p) => p.relacion === "Titular") || r2.data?.[0];
+
+    console.log("R2 COMPLETO:", r2);
+    console.log("R2.DATA:", r2?.data);
+    console.log("ES ARRAY:", Array.isArray(r2?.data));
+
+    const personas = Array.isArray(r2?.data) ? r2.data : [];
+
+    const persona =
+      personas.find((p) => p.relacion === "Titular") || personas[0] || null;
+
+    if (!persona) {
+      setPanel({
+        status: "ERROR",
+        text: "No se pudo obtener el titular de la cuenta desde Aune."
+      });
+      return;
+    }
 
     const cuit = limpiarCuit(persona?.cuit);
     const inversorCalificado = persona?.inversorCalificado ?? null;
