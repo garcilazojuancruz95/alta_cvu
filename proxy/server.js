@@ -1,37 +1,36 @@
 /* =========================================================
    1) DEPENDENCIAS
 ========================================================= */
+require("dotenv").config();
+
 const express = require("express");
 const fetch = require("node-fetch").default;
 const cors = require("cors");
+
+const { getAuneToken } = require("./auneAuth");
+const { getComplifToken } = require("./complifAuth");
 
 /* =========================================================
    2) CONFIGURACION GENERAL
 ========================================================= */
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 
-const BASE_URL_COMPLIF = "https://api.complif.com";
-const TOKEN_COMPLIF = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiAiYXV0aGVudGljYXRlZCIsICJleHAiOiAxNzc3MzAwNDc3LCAiaWF0IjogMTc3NjY5NTY3NiwgInN1YiI6ICI1NDI2YmY2Ny1lZmNiLTQ5ZTktODVlYS0xYzEyYmM1NjY1NjciLCAicm9sZSI6ICJhdXRoZW50aWNhdGVkIiwgInVzZXJfdHlwZSI6ICJhcHBsaWNhdGlvbiIsICJhcHBfbWV0YWRhdGEiOiB7InByb3ZpZGVyIjogImNsaWVudF9jcmVkZW50aWFscyIsICJwcm92aWRlcnMiOiBbImNsaWVudF9jcmVkZW50aWFscyJdLCAib3JnYW5pemF0aW9ucyI6IFsiTkFTSU5JIl0sICJpZF9vcmdhbml6YXRpb24iOiAiTkFTSU5JIiwgImlkX2V4dGVybmFsX29yZ2FuaXphdGlvbiI6IG51bGx9fQ.nu-2bbvbYTKqljG1QyVWbj4LChIAtXn_xIIOk99XoAY";
+const BASE_URL_COMPLIF = process.env.COMPLIF_BASE_URL;
 
 /* =========================================================
    3) HELPERS
 ========================================================= */
-
-/**
- * Hace una consulta GET a Complif y devuelve:
- * - res: respuesta original
- * - raw: texto crudo
- * - data: JSON parseado si aplica
- */
 async function fetchJsonComplif(url) {
+  const token = await getComplifToken();
+
   const res = await fetch(url, {
     method: "GET",
     headers: {
       Accept: "application/json",
-      Authorization: TOKEN_COMPLIF
+      Authorization: token
     }
   });
 
@@ -47,9 +46,6 @@ async function fetchJsonComplif(url) {
   return { res, raw, data };
 }
 
-/**
- * Busca dentro de accounts_integrations los datos fiscales del titular.
- */
 function extraerDatosFiscalesComplif(integraciones) {
   if (!Array.isArray(integraciones)) return null;
 
@@ -62,47 +58,45 @@ function extraerDatosFiscalesComplif(integraciones) {
 }
 
 /* =========================================================
-   4) TEST DEL TOKEN
+   4) RUTAS DE TEST TEMPORALES
 ========================================================= */
-
-/**
- * Prueba simple para validar si el token funciona.
- * Consulta el endpoint general de cuentas.
- */
-async function probarToken() {
+app.get("/test/aune-token", async (req, res) => {
   try {
-    console.log("TOKEN EN USO:", TOKEN_COMPLIF.slice(0, 50) + "...");
+    const token = await getAuneToken();
 
-    const res = await fetch(`${BASE_URL_COMPLIF}/api/crm/v1/accounts`, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        Authorization: TOKEN_COMPLIF
-      }
+    return res.json({
+      ok: true,
+      message: "Token de Aune obtenido correctamente",
+      tokenPreview: token ? token.slice(0, 20) + "..." : null
     });
-
-    console.log("STATUS TOKEN:", res.status);
-
-    const text = await res.text();
-    console.log("RESPUESTA TOKEN:", text);
   } catch (error) {
-    console.error("Error probando token:", error.message);
+    return res.status(500).json({
+      ok: false,
+      error: error.message
+    });
   }
-}
+});
+
+app.get("/test/complif-token", async (req, res) => {
+  try {
+    const token = await getComplifToken();
+
+    return res.json({
+      ok: true,
+      message: "Token de Complif obtenido correctamente",
+      tokenPreview: token ? token.slice(0, 20) + "..." : null
+    });
+  } catch (error) {
+    return res.status(500).json({
+      ok: false,
+      error: error.message
+    });
+  }
+});
 
 /* =========================================================
-   5) RUTA DEL PROXY
+   5) RUTA DEL PROXY COMPLIF
 ========================================================= */
-
-/**
- * GET /complif/:cuenta
- *
- * Flujo:
- * 1. Busca la cuenta en Complif
- * 2. Obtiene el id_account
- * 3. Busca las integraciones de esa cuenta
- * 4. Extrae categoria de ganancias e IVA
- */
 app.get("/complif/:cuenta", async (req, res) => {
   try {
     const cuenta = req.params.cuenta;
@@ -113,9 +107,6 @@ app.get("/complif/:cuenta", async (req, res) => {
       });
     }
 
-    /* ---------------------------------------------------------
-       5.1) Buscar cuenta en Complif
-    --------------------------------------------------------- */
     const r1 = await fetchJsonComplif(
       `${BASE_URL_COMPLIF}/api/crm/v1/accounts/${encodeURIComponent(cuenta)}`
     );
@@ -135,9 +126,6 @@ app.get("/complif/:cuenta", async (req, res) => {
       });
     }
 
-    /* ---------------------------------------------------------
-       5.2) Buscar integraciones de la cuenta
-    --------------------------------------------------------- */
     const r2 = await fetchJsonComplif(
       `${BASE_URL_COMPLIF}/api/crm/v1/accounts_integrations?id_account=eq.${encodeURIComponent(idAccount)}`
     );
@@ -151,9 +139,6 @@ app.get("/complif/:cuenta", async (req, res) => {
 
     const datosFiscales = extraerDatosFiscalesComplif(r2.data);
 
-    /* ---------------------------------------------------------
-       5.3) Respuesta final
-    --------------------------------------------------------- */
     return res.json({
       idAccountComplif: idAccount,
       categoria_iigg: datosFiscales?.tipoResponsableGanancias ?? null,
@@ -171,6 +156,5 @@ app.get("/complif/:cuenta", async (req, res) => {
    6) LEVANTAR SERVIDOR
 ========================================================= */
 app.listen(PORT, () => {
-  console.log(`Proxy Complif corriendo en http://localhost:${PORT}`);
-  //probarToken();
+  console.log(`Proxy corriendo en http://localhost:${PORT}`);
 });
