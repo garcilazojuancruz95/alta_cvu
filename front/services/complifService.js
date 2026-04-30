@@ -9,13 +9,7 @@ export async function obtenerDatosComplif(cuenta) {
     const data = await resp.json();
 
     if (!resp.ok) {
-      console.error("Error consultando Complif:", data);
-      return {
-        idAccountComplif: null,
-        categoria_iigg: null,
-        categoriaIva: null,
-        fechaNacimiento: null
-      };
+      throw new Error("Error consultando Complif");
     }
 
     return {
@@ -25,7 +19,8 @@ export async function obtenerDatosComplif(cuenta) {
       fechaNacimiento: data.fechaNacimiento ?? null
     };
   } catch (err) {
-    console.error("Complif no respondió:", err);
+    console.error("Error en Complif:", err);
+
     return {
       idAccountComplif: null,
       categoria_iigg: null,

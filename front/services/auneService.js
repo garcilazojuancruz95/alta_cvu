@@ -12,6 +12,10 @@ async function fetchJson(url) {
   const raw = await res.text();
   const data = raw ? JSON.parse(raw) : null;
 
+  if (!res.ok) {
+    throw new Error(data?.error || "Error en la llamada al backend");
+  }
+
   return { res, raw, data };
 }
 
