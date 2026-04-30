@@ -336,15 +336,55 @@ app.get("/resumen/:cuenta", async (req, res) => {
   try {
     const cuenta = req.params.cuenta;
 
-    const [auneResp, complifResp, complifPersonasResp] = await Promise.all([
-      fetch(`http://localhost:${PORT}/aune/cuentas/${encodeURIComponent(cuenta)}`),
+    const auneResp = await fetch(
+      `http://localhost:${PORT}/aune/cuentas/${encodeURIComponent(cuenta)}`
+    );
+    const aune = await auneResp.json();
+
+    if (!auneResp.ok) {
+      return res.status(auneResp.status).json({
+        error: "Error consultando Aune en resumen.",
+        source: "aune",
+        detail: aune
+      });
+    }
+
+    if (String(aune.tipoTitular || "").toLowerCase() !== "ideal") {
+      return res.status(422).json({
+        error: "La cuenta no corresponde a un titular de tipo ideal.",
+        source: "aune",
+        detail: {
+          cuenta,
+          tipoTitular: aune.tipoTitular ?? null
+        }
+      });
+    }
+
+    const [complifResp, complifPersonasResp] = await Promise.all([
       fetch(`http://localhost:${PORT}/complif/${encodeURIComponent(cuenta)}`),
       fetch(`http://localhost:${PORT}/complif/${encodeURIComponent(cuenta)}/personas`)
     ]);
 
-    const aune = await auneResp.json();
-    const complif = await complifResp.json();
-    const complifPersonas = await complifPersonasResp.json();
+    const [complif, complifPersonas] = await Promise.all([
+      complifResp.json(),
+      complifPersonasResp.json()
+    ]);
+
+    if (!complifResp.ok) {
+      return res.status(complifResp.status).json({
+        error: "Error consultando Complif en resumen.",
+        source: "complif",
+        detail: complif
+      });
+    }
+
+    if (!complifPersonasResp.ok) {
+      return res.status(complifPersonasResp.status).json({
+        error: "Error consultando personas de Complif en resumen.",
+        source: "complifPersonas",
+        detail: complifPersonas
+      });
+    }
 
     return res.json({
       cuenta,

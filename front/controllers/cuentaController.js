@@ -1,7 +1,6 @@
+import { BASE_URL_PROXY } from "../config/api.js";
 import { btn, input } from "../ui/elements.js";
 import { setPanel, setLastRawText } from "../ui/panel.js";
-
-const BASE_URL = "http://localhost:3000";
 
 export async function buscarCuenta() {
   const cuenta = input.value.trim();
@@ -18,10 +17,16 @@ export async function buscarCuenta() {
   btn.textContent = "Buscando...";
 
   try {
-    const resp = await fetch(`${BASE_URL}/resumen/${encodeURIComponent(cuenta)}`);
+    const resp = await fetch(
+      `${BASE_URL_PROXY}/resumen/${encodeURIComponent(cuenta)}`
+    );
     const data = await resp.json();
 
     if (!resp.ok) {
+      if (resp.status === 422 && data?.detail?.tipoTitular) {
+        throw new Error("La cuenta ingresada no corresponde a una persona jurídica.");
+      }
+
       throw new Error(data?.error || "Error consultando resumen.");
     }
 
