@@ -3,7 +3,7 @@ const fetch = require("node-fetch").default;
 const TOKEN_REFRESH_MARGIN_MS = 60 * 1000;
 
 let complifTokenCache = {
-  token: null,
+  token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiAiYXV0aGVudGljYXRlZCIsICJleHAiOiAxNzgxNjIwOTg1LCAiaWF0IjogMTc4MTAxNjE4NCwgInN1YiI6ICI1NDI2YmY2Ny1lZmNiLTQ5ZTktODVlYS0xYzEyYmM1NjY1NjciLCAicm9sZSI6ICJhdXRoZW50aWNhdGVkIiwgInVzZXJfdHlwZSI6ICJhcHBsaWNhdGlvbiIsICJhcHBfbWV0YWRhdGEiOiB7InByb3ZpZGVyIjogImNsaWVudF9jcmVkZW50aWFscyIsICJwcm92aWRlcnMiOiBbImNsaWVudF9jcmVkZW50aWFscyJdLCAib3JnYW5pemF0aW9ucyI6IFsiTkFTSU5JIl0sICJpZF9vcmdhbml6YXRpb24iOiAiTkFTSU5JIiwgImlkX2V4dGVybmFsX29yZ2FuaXphdGlvbiI6IG51bGx9fQ.8f-gVbdS7HX4YHTMiWtYucktVmEq9Tk_QeYk3mdljuU",
   expiresAt: 0
 };
 

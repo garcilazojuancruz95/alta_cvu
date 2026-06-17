@@ -4,7 +4,7 @@ const TOKEN_REFRESH_MARGIN_MS = 60 * 1000;
 const FALLBACK_TOKEN_TTL_MS = 15 * 60 * 1000;
 
 let auneTokenCache = {
-  token: null,
+  token: "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJpZF9jbGllbnRlICxBUElfSkNHYXJjaWxhem8gLDE3MC4yMzguMTI0LjE4OCIsImp0aSI6ImE2ZWY1MTBhLTZiZDUtNDIzOC1hOGJiLTg0NTViYzI3OWU4MCIsImV4cCI6MTc4MTEwMjczMn0.o3QdQ1KLhwTTSr4ppO2DIP_pZMTDR-bv9uBgVsXiCoEEWOUqzflF72OgN9oqBJVwcdBuZ9mjcxZ4AjCS3eMWyQ",
   expiresAt: 0
 };
 
